@@ -89,16 +89,19 @@ public class NavMeshMovement : MonoBehaviour
     }
 
     private void HandleHunger()
-    {
-        StopAgent(); 
+    { 
         Feeder component;
         if (feederPosition.TryGetComponent<Feeder>(out component))
         {
             if (component.full)
                 navMeshAgent.SetDestination(feederPosition.position);
             else
+            {
+                StopAgent();
                 animator.Play("Hungry");
+            }
         }
+                
         Debug.Log("Mocha is Hungry.");
     }
 
@@ -111,9 +114,11 @@ public class NavMeshMovement : MonoBehaviour
     
     private void HandleSleep()
     {
-        StopAgent();
+        
         if (bedPosition != null && animator.GetBool("IsSleeping") == false)
+        {
             navMeshAgent.SetDestination(bedPosition.position);
+        }    
         else if (NeedsManager.Instance.GetSleepValue() >= 1.0f)
         {
             animator.SetBool("IsSleeping", false);
