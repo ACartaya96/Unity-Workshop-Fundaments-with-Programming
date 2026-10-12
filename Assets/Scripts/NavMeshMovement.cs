@@ -8,8 +8,11 @@ public class NavMeshMovement : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     [SerializeField] private Mocha mocha;
-    [SerializeField] private Transform targetPosition;
+    [SerializeField] private Transform feederPosition;
+    [SerializeField] private Transform bedPosition;
     [SerializeField] private float wanderRadius = 10f;
+    float dir_x = 0f;
+    float dir_y = 0f;
     public bool TryGetRandomPoint(Vector3 center, float maxDistance, out Vector3 result)
     {
         for (int i = 0; i < 30; i++)
@@ -33,7 +36,7 @@ public class NavMeshMovement : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         mocha = GetComponent<Mocha>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren(typeof(Animator)) as Animator;
     }
 
     private void Update()
@@ -56,15 +59,23 @@ public class NavMeshMovement : MonoBehaviour
                
             }
         }
-
+        
         Vector3 worldVelocity = navMeshAgent.velocity;
         Vector3 localVelocity = transform.InverseTransformDirection(worldVelocity);
-
-        float dir_x = localVelocity.x;
-        float dir_y = localVelocity.y;
-
+        
+        // This allow me to store the direction of Mocha, and keep his direction facing
+        // persistent between animation states.
+        if (localVelocity != Vector3.zero)
+        {
+            dir_x = localVelocity.x;
+            dir_y = localVelocity.y;
+        }
+        
+            
+        // These set the animation parameters for Mocha
         animator.SetFloat("Dir_X", dir_x);
         animator.SetFloat("Dir_Y", dir_y);
+        animator.SetBool("IsWalking", localVelocity != Vector3.zero);
     }
 
     public void StopAgent()
@@ -79,16 +90,42 @@ public class NavMeshMovement : MonoBehaviour
 
     private void HandleHunger()
     {
+        StopAgent(); 
+        Feeder component;
+        if (feederPosition.TryGetComponent<Feeder>(out component))
+        {
+            if (component.full)
+                navMeshAgent.SetDestination(feederPosition.position);
+            else
+                animator.Play("Hungry");
+        }
         Debug.Log("Mocha is Hungry.");
     }
 
     private void HandleBoredom()
     {
+        StopAgent();
+        animator.Play("Bored");
         Debug.Log("Mocha is Bored.");
     }
     
     private void HandleSleep()
     {
+        StopAgent();
+        if (bedPosition != null && animator.GetBool("IsSleeping") == false)
+            navMeshAgent.SetDestination(bedPosition.position);
+        else if (NeedsManager.Instance.GetSleepValue() >= 1.0f)
+        {
+            animator.SetBool("IsSleeping", false);
+        }
+        else
+        {
+            float newValue = NeedsManager.Instance.GetSleepValue() + 0.1f;
+            newValue = Mathf.Clamp(newValue, 0.0f, 1.0f);
+            NeedsManager.Instance.SetSleepValue(newValue);
+        }
+        
+            
         Debug.Log("Mocha is Sleepy.");
     }
 }

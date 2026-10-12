@@ -6,7 +6,9 @@ public class Mocha : MonoBehaviour
     public bool mBored = false;
     public bool mSleepy = false;
 
-    [SerializeField] private float threshold = 0.5f;
+    [SerializeField] private float hungerThreshold = 0.5f;
+    [SerializeField] private float boredomThreshold = 0.5f;
+    [SerializeField] private float sleepThreshold = 0.5f;
 
     private void OnEnable()
     {
@@ -30,7 +32,7 @@ public class Mocha : MonoBehaviour
 
     private void CheckHungerStatus(float value)
     {
-        if (value <= threshold)
+        if (value <= hungerThreshold)
         {
             mHungry = true;
             return;
@@ -41,7 +43,7 @@ public class Mocha : MonoBehaviour
 
     private void CheckBoredomStatus(float value)
     {
-        if (value <= threshold)
+        if (value <= boredomThreshold)
         {
             mBored = true;
             return;
@@ -52,7 +54,7 @@ public class Mocha : MonoBehaviour
 
     private void CheckSleepStatus(float value)
     {
-        if (value  <= threshold)
+        if (value  <= sleepThreshold)
         {
             mSleepy = true;
             return;
