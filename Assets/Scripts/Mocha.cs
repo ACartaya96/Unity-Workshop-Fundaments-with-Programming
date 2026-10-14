@@ -12,6 +12,7 @@ public class Mocha : MonoBehaviour
 
     private void OnEnable()
     {
+        
         NeedsManager.hungerUpdated += CheckHungerStatus;
         NeedsManager.boredomUpdated += CheckBoredomStatus;
         NeedsManager.sleepUpdated += CheckSleepStatus;
@@ -19,58 +20,33 @@ public class Mocha : MonoBehaviour
 
     private void OnDisable()
     {
+       
         NeedsManager.hungerUpdated -= CheckHungerStatus;
         NeedsManager.boredomUpdated -= CheckBoredomStatus;
         NeedsManager.sleepUpdated -= CheckSleepStatus;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // TODO EXERCISE 6: CONDITIONALS
     private void CheckHungerStatus(float value)
     {
-        if (value <= hungerThreshold)
-        {
-            mHungry = true;
-            return;
-        }
-
-        mHungry = false;
+        
+       
     }
 
     private void CheckBoredomStatus(float value)
     {
-        if (value <= boredomThreshold)
-        {
-            mBored = true;
-            return;
-        }
-
-        mBored = false;
     }
 
     private void CheckSleepStatus(float value)
     {
-        if (value <= sleepThreshold)
-        {
-            mSleepy = true;
-            return;
-        }
-        else if (value >= 1.0f)
-        {
-            mSleepy = false;
-            return;
-        }
+     
+        // TODO EXERCISE 7: CONDITIONALS CONT.
+      
     }
 
     public void PlayWithMocha()
     {
         float newValue = NeedsManager.Instance.GetBoredomValue() + 0.3f;
         NeedsManager.Instance.SetBoredomValue(newValue);
-
         Debug.Log("You played with Mocha");
     }
 }

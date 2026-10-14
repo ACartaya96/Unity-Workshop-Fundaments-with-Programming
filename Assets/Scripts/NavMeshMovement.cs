@@ -41,7 +41,8 @@ public class NavMeshMovement : MonoBehaviour
 
     private void Update()
     {
-        if (mocha.mHungry || mocha.mSleepy || mocha.mBored)
+        // TODO EXCERCISE 8: OPPERANDS AND CONDITONALS
+        if (mocha.mHungry)
         {
             if (mocha.mSleepy)
                 HandleSleep();
