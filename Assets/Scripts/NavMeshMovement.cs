@@ -36,20 +36,19 @@ public class NavMeshMovement : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         mocha = GetComponent<Mocha>();
-        animator = GetComponentInChildren(typeof(Animator)) as Animator;
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
         if (mocha.mHungry || mocha.mSleepy || mocha.mBored)
         {
-            if (mocha.mHungry)
-                HandleHunger();
-            if (mocha.mBored)
-                HandleBoredom();
             if (mocha.mSleepy)
                 HandleSleep();
-
+            else if (mocha.mHungry)
+                HandleHunger();
+            else if (mocha.mBored)
+                HandleBoredom();
         }
         else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
         {
@@ -70,8 +69,10 @@ public class NavMeshMovement : MonoBehaviour
             dir_x = localVelocity.x;
             dir_y = localVelocity.y;
         }
-        
-            
+
+        // Only place I could put the wake up animation right now might fix later
+        if (NeedsManager.Instance.GetSleepValue() >= 1.0f)
+            animator.SetBool("IsSleeping", false);
         // These set the animation parameters for Mocha
         animator.SetFloat("Dir_X", dir_x);
         animator.SetFloat("Dir_Y", dir_y);
@@ -114,23 +115,11 @@ public class NavMeshMovement : MonoBehaviour
     
     private void HandleSleep()
     {
-        
+
         if (bedPosition != null && animator.GetBool("IsSleeping") == false)
         {
             navMeshAgent.SetDestination(bedPosition.position);
         }    
-        else if (NeedsManager.Instance.GetSleepValue() >= 1.0f)
-        {
-            animator.SetBool("IsSleeping", false);
-        }
-        else
-        {
-            float newValue = NeedsManager.Instance.GetSleepValue() + 0.1f;
-            newValue = Mathf.Clamp(newValue, 0.0f, 1.0f);
-            NeedsManager.Instance.SetSleepValue(newValue);
-        }
-        
-            
         Debug.Log("Mocha is Sleepy.");
     }
 }

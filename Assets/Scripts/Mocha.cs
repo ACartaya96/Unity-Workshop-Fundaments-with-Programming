@@ -54,13 +54,16 @@ public class Mocha : MonoBehaviour
 
     private void CheckSleepStatus(float value)
     {
-        if (value  <= sleepThreshold)
+        if (value <= sleepThreshold)
         {
             mSleepy = true;
             return;
         }
-
-        mSleepy = false;
+        else if (value >= 1.0f)
+        {
+            mSleepy = false;
+            return;
+        }
     }
 
     public void PlayWithMocha()

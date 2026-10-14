@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -88,5 +89,21 @@ public class NeedsManager : MonoBehaviour
     public float GetSleepValue()
     {
         return sleepValue;
+    }
+    
+    public IEnumerator SleepRoutine()
+    {
+        CancelInvoke(nameof(DepleteSleep));
+        while(sleepValue < 1.0)
+        {
+            float timeBetweenTicks = tickRate;
+
+            float newValue = sleepValue + (sleepRate + 0.1f);
+            newValue = Mathf.Clamp(newValue, 0.0f, 1.0f);
+            SetSleepValue(newValue);
+            yield return new WaitForSeconds(timeBetweenTicks);
+        }
+        
+        InvokeRepeating(nameof(DepleteSleep), 1.0f, tickRate);
     }
 }

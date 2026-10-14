@@ -8,10 +8,12 @@ public class Bed : MonoBehaviour
         if (other.name == "Mocha")
         {
             other.transform.position = transform.position;
-            Animator anim = other.GetComponent<Animator>();
-            if (anim != null)
+            Animator anim = other.GetComponentInChildren<Animator>();
+            Mocha mocha = other.GetComponent<Mocha>();
+            if (anim != null && mocha.mSleepy)
             {
                 anim.SetBool("IsSleeping", true);
+                StartCoroutine(NeedsManager.Instance.SleepRoutine());
             }
         }
         

@@ -1103,7 +1103,7 @@ MonoBehaviour:
   boredomValue: 1
   boredomRate: 0.005
   sleepValue: 1
-  sleepRate: 0.02
+  sleepRate: 0.0015
 --- !u!1 &714623657
 GameObject:
   m_ObjectHideFlags: 0

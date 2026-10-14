@@ -29,13 +29,13 @@ public class Feeder : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.name == "Mocha")
+        if (other.name == "Mocha" && full)
         {
             NavMeshMovement movement = other.GetComponent<NavMeshMovement>();
-            Animator animator = other.GetComponent<Animator>();
+            Animator animator = other.GetComponentInChildren<Animator>();
 
             movement.StopAgent();
-            Debug.Log("Mocah eats the food.");
+            animator.Play("Eat");
 
             float newValue = NeedsManager.Instance.GetHungerValue() + 0.9f;
             NeedsManager.Instance.SetHungerValue(newValue);
